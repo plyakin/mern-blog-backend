@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+//создаем модель пользователя
 const UserSchema = new mongoose.Schema(
 	{
 		fullName: {
