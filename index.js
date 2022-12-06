@@ -1,10 +1,15 @@
 import express from 'express';
 
 import mongoose from 'mongoose';
-import { registerValidation } from './validations/auth.js';
+import {
+	registerValidation,
+	loginValidation,
+	postCreateValidation,
+} from './validations/validation.js';
 
 import checkAuth from './utils/checkAuth.js';
 import * as UserController from './controllers/UserController.js';
+import * as PostController from './controllers/PostController.js';
 
 mongoose
 	.connect(
@@ -24,10 +29,17 @@ app.use(express.json());
 app.post('/auth/register', registerValidation, UserController.register);
 
 //Авторизация пользователя
-app.post('/auth/login', UserController.login);
+app.post('/auth/login', loginValidation, UserController.login);
 
 //Получаем информацию о себе
 app.get('/auth/me', checkAuth, UserController.getMe);
+
+//CRUD постов
+app.get('/posts', PostController.getAll);
+app.get('/posts/:id', PostController.getOne);
+app.post('/posts', checkAuth, postCreateValidation, PostController.create);
+app.delete('/posts/:id', checkAuth, PostController.remove);
+app.patch('/posts/:id', PostController.update);
 //запускаем сервер
 app.listen(4444, (err) => {
 	if (err) {
